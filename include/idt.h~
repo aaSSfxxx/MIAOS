@@ -1,0 +1,59 @@
+#ifndef __idt_h
+#define __idt_h
+
+#include <misc.h>
+
+/* IDT Descriptor */
+struct idtdescr {
+   WORD BaseLower; // offset bits 0..15
+   WORD Selector; // a code segment selector in GDT or LDT
+   BYTE Reserved;      // unused, set to 0
+   BYTE Flags; // type and attributes, see below
+   WORD BaseHigher; // offset bits 16..31
+} PACKED;
+
+typedef struct idtdescr IDT_DESCRIPTOR, *PIDT_DESCRIPTOR;
+
+struct idttable {
+    WORD Limit;
+    DWORD Base; 
+} PACKED;
+
+typedef struct idttable IDT_TABLE, *PIDT_TABLE;
+
+void LoadIDT (void);
+
+extern void isr0 (void);
+extern void isr1 (void);
+extern void isr2 (void);
+extern void isr3 (void);
+extern void isr4 (void);
+extern void isr5 (void);
+extern void isr6 (void);
+extern void isr7 (void);
+extern void isr8 (void);
+extern void isr9 (void);
+extern void isr10 (void);
+extern void isr11 (void);
+extern void isr12 (void);
+extern void isr13 (void);
+extern void isr14 (void);
+extern void isr15 (void);
+extern void isr16 (void);
+extern void isr17 (void);
+extern void isr18 (void);
+extern void isr19 (void);
+extern void isr20 (void);
+extern void isr21 (void);
+extern void isr22 (void);
+extern void isr23 (void);
+extern void isr24 (void);
+extern void isr25 (void);
+extern void isr26 (void);
+extern void isr27 (void);
+extern void isr28 (void);
+extern void isr29 (void);
+extern void isr30 (void);
+extern void isr31 (void);
+
+#endif

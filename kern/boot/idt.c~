@@ -1,0 +1,75 @@
+#include <functions.h>
+#include <idt.h>
+
+/**
+ * Helper function which makes an IDT destriptor
+ */
+
+IDT_DESCRIPTOR kidt[256];
+IDT_TABLE kidtr;
+
+void InitIDTDescriptor (BYTE index,
+                        DWORD dwBase,
+                        WORD wSelector,
+                        BYTE bFlags)
+{
+    
+    kidt[index].BaseLower = (dwBase & 0xFFFF);
+    kidt[index].BaseHigher = (dwBase >> 16) & 0xFFFF;
+    kidt[index].Selector = wSelector;
+    kidt[index].Flags = bFlags;
+    kidt[index].Reserved = 0; // set it to 0
+}
+
+/**
+ * Loads the new IDT which will handle interrupts
+ */
+void LoadIDT (void)
+{
+    int toto = 4;
+    InitIDTDescriptor( 0, (DWORD)isr0 , 0x08, 0x8E);
+    InitIDTDescriptor( 1, (DWORD)isr1 , 0x08, 0x8E);
+    InitIDTDescriptor( 2, (DWORD)isr2 , 0x08, 0x8E);
+    InitIDTDescriptor( 3, (DWORD)isr3 , 0x08, 0x8E);
+    InitIDTDescriptor( 4, (DWORD)isr4 , 0x08, 0x8E);
+    InitIDTDescriptor( 5, (DWORD)isr5 , 0x08, 0x8E);
+    InitIDTDescriptor( 6, (DWORD)isr6 , 0x08, 0x8E);
+    InitIDTDescriptor( 7, (DWORD)isr7 , 0x08, 0x8E);
+    InitIDTDescriptor( 8, (DWORD)isr8 , 0x08, 0x8E);
+    InitIDTDescriptor( 9, (DWORD)isr9 , 0x08, 0x8E);
+    InitIDTDescriptor( 10, (DWORD)isr10 , 0x08, 0x8E);
+    InitIDTDescriptor( 11, (DWORD)isr11 , 0x08, 0x8E);
+    InitIDTDescriptor( 12, (DWORD)isr12 , 0x08, 0x8E);
+    InitIDTDescriptor( 13, (DWORD)isr13 , 0x08, 0x8E);
+    InitIDTDescriptor( 14, (DWORD)isr14 , 0x08, 0x8E);
+    InitIDTDescriptor( 15, (DWORD)isr15 , 0x08, 0x8E);
+    InitIDTDescriptor( 16, (DWORD)isr16 , 0x08, 0x8E);
+    InitIDTDescriptor( 17, (DWORD)isr17 , 0x08, 0x8E);
+    InitIDTDescriptor( 18, (DWORD)isr18 , 0x08, 0x8E);
+    InitIDTDescriptor( 19, (DWORD)isr19 , 0x08, 0x8E);
+    InitIDTDescriptor( 20, (DWORD)isr20 , 0x08, 0x8E);
+    InitIDTDescriptor( 21, (DWORD)isr21 , 0x08, 0x8E);
+    InitIDTDescriptor( 22, (DWORD)isr22 , 0x08, 0x8E);
+    InitIDTDescriptor( 23, (DWORD)isr23 , 0x08, 0x8E);
+    InitIDTDescriptor( 24, (DWORD)isr24 , 0x08, 0x8E);
+    InitIDTDescriptor( 25, (DWORD)isr25 , 0x08, 0x8E);
+    InitIDTDescriptor( 26, (DWORD)isr26 , 0x08, 0x8E);
+    InitIDTDescriptor( 27, (DWORD)isr27 , 0x08, 0x8E);
+    InitIDTDescriptor( 28, (DWORD)isr28 , 0x08, 0x8E);
+    InitIDTDescriptor( 29, (DWORD)isr29 , 0x08, 0x8E);
+    InitIDTDescriptor( 30, (DWORD)isr30 , 0x08, 0x8E);
+    InitIDTDescriptor( 31, (DWORD)isr31 , 0x08, 0x8E);
+    
+    kidtr.Limit = sizeof(IDT_DESCRIPTOR) * 256 -1;
+    kidtr.Base  = (DWORD)kidt;
+    asm ("lidt (kidtr)");
+    printk ("Triggering interruption : ");
+    asm ("int $2");
+    memcpy(0xedadbeef, &toto, 1);
+    
+}
+
+void ISRDispatcher (REGISTERS Registers)
+{
+    printk("Interrupt %x called \n", Registers.IntNum);
+}
